@@ -62,7 +62,7 @@ public abstract class DayPickerView extends ListView implements OnScrollListener
     protected int mNumWeeks = 6;
     protected boolean mShowWeekNumber = false;
     protected int mDaysPerWeek = 7;
-    private static final SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
+    private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
 
     // These affect the scroll speed and feel
     protected float mFriction = 1.0f;
@@ -106,6 +106,7 @@ public abstract class DayPickerView extends ListView implements OnScrollListener
     public void setController(CalendarDatePickerController controller) {
         mController = controller;
         mController.registerOnDateChangedListener(this);
+        YEAR_FORMAT = new SimpleDateFormat("yyyy", mController.getLocale());
         refreshAdapter();
         onDateChanged();
     }
@@ -445,7 +446,8 @@ public abstract class DayPickerView extends ListView implements OnScrollListener
         StringBuffer sbuf = new StringBuffer();
         sbuf.append(cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
         sbuf.append(" ");
-        sbuf.append(YEAR_FORMAT.format(cal.getTime()));
+        sbuf.append(mController.getLocaleYear(cal.getTime()));
+
         return sbuf.toString();
     }
 

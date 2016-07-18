@@ -21,6 +21,9 @@ import android.util.SparseArray;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment.OnDateChangedListener;
 import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter.CalendarDay;
 
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Controller class to communicate among the various components of the date picker dialog.
  */
@@ -45,4 +48,10 @@ interface CalendarDatePickerController {
     SparseArray<CalendarDay> getDisabledDays();
 
     void tryVibrate();
+
+    Locale getLocale();
+    boolean isLocalTH();
+    int getLocaleYear(Date date);
+    int getLocaleYear();
+    int getLocaleYear(int year);
 }

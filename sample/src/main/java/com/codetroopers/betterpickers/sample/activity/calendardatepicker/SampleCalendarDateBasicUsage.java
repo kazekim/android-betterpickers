@@ -9,6 +9,8 @@ import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialo
 import com.codetroopers.betterpickers.sample.R;
 import com.codetroopers.betterpickers.sample.activity.BaseSampleActivity;
 
+import java.util.Locale;
+
 public class SampleCalendarDateBasicUsage extends BaseSampleActivity
         implements CalendarDatePickerDialogFragment.OnDateSetListener {
 
@@ -31,6 +33,7 @@ public class SampleCalendarDateBasicUsage extends BaseSampleActivity
             public void onClick(View v) {
                 CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
                         .setOnDateSetListener(SampleCalendarDateBasicUsage.this);
+                cdp.setLocale(new Locale("th","TH"));
                 cdp.show(getSupportFragmentManager(), FRAG_TAG_DATE_PICKER);
             }
         });

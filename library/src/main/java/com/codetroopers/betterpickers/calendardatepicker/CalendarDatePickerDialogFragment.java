@@ -47,6 +47,7 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
@@ -80,8 +81,8 @@ public class CalendarDatePickerDialogFragment extends DialogFragment implements 
     private static final int ANIMATION_DURATION = 300;
     private static final int ANIMATION_DELAY = 500;
 
-    private static final SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
-    private static final SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
+    private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
+    private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
 
     private final Calendar mCalendar = Calendar.getInstance();
     private OnDateSetListener mCallBack;
@@ -120,6 +121,8 @@ public class CalendarDatePickerDialogFragment extends DialogFragment implements 
     private int mStyleResId;
     private int mSelectedColor;
     private int mUnselectedColor;
+
+    private Locale locale;
 
     /**
      * The callback used to indicate the user is done filling in the date.
@@ -408,23 +411,70 @@ public class CalendarDatePickerDialogFragment extends DialogFragment implements 
                 }
                 pulseAnimator.start();
 
-                CharSequence yearString = YEAR_FORMAT.format(millis);
+                CharSequence yearString = Integer.toString(getLocaleYear(mCalendar.getTime()));
                 mAnimator.setContentDescription(mYearPickerDescription + ": " + yearString);
                 Utils.tryAccessibilityAnnounce(mAnimator, mSelectYear);
                 break;
         }
     }
 
+    public Locale getLocale()
+    {
+        return locale;
+    }
+
+    public boolean isLocalTH()
+    {
+        return locale.getLanguage().equals("th");
+    }
+
+    public void setLocale(Locale locale)
+    {
+        this.locale = locale;
+        YEAR_FORMAT = new SimpleDateFormat("yyyy", locale);
+        DAY_FORMAT = new SimpleDateFormat("dd", locale);
+    }
+
+    public int getLocaleYear()
+    {
+        int year = Integer.parseInt(YEAR_FORMAT.format(mCalendar.getTime()));
+        if(isLocalTH()){
+            year += 543;
+        }
+        return year;
+    }
+
+    public int getLocaleYear(int year)
+    {
+        if(isLocalTH()){
+            year += 543;
+        }
+        return year;
+    }
+
+    public int getLocaleYear(Date date)
+    {
+        int year = Integer.parseInt(YEAR_FORMAT.format(date));
+        if(isLocalTH()){
+            year += 543;
+        }
+        return year;
+    }
+
     private void updateDisplay(boolean announce) {
+        if(locale == null)
+            locale = Locale.getDefault();
         if (mDayOfWeekView != null) {
             mDayOfWeekView.setText(mCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG,
-                    Locale.getDefault()).toUpperCase(Locale.getDefault()));
+                    locale).toUpperCase(locale));
         }
 
         mSelectedMonthTextView.setText(mCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT,
-                Locale.getDefault()).toUpperCase(Locale.getDefault()));
+                locale).toUpperCase(locale));
         mSelectedDayTextView.setText(DAY_FORMAT.format(mCalendar.getTime()));
-        mYearView.setText(YEAR_FORMAT.format(mCalendar.getTime()));
+
+        int year = getLocaleYear();
+        mYearView.setText(Integer.toString(year));
 
         // Accessibility.
         long millis = mCalendar.getTimeInMillis();

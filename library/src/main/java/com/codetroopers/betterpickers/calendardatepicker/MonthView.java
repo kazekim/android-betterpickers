@@ -145,8 +145,10 @@ public abstract class MonthView extends View {
     protected Paint mDisabledDaySquarePaint;
     protected Paint mMonthDayLabelPaint;
 
-    private final Formatter mFormatter;
+    private Formatter mFormatter;
     private final StringBuilder mStringBuilder;
+
+    private Locale locale;
 
     // The Julian day of the first day displayed by this item
     protected int mFirstJulianDay = -1;
@@ -203,6 +205,7 @@ public abstract class MonthView extends View {
 
     public MonthView(Context context) {
         super(context);
+
         Resources res = context.getResources();
 
         mDayLabelCalendar = Calendar.getInstance();
@@ -237,6 +240,12 @@ public abstract class MonthView extends View {
 
         // Sets up any standard paints that will be used
         initView();
+    }
+
+    public void setLocale(Locale locale)
+    {
+        this.locale = locale;
+        mFormatter = new Formatter(mStringBuilder, locale);
     }
 
     public void setTheme(TypedArray themeColors) {
@@ -451,7 +460,14 @@ public abstract class MonthView extends View {
         int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_NO_MONTH_DAY;
         mStringBuilder.setLength(0);
         long millis = mCalendar.getTimeInMillis();
-        String monthTitle = DateUtils.formatDateRange(getContext(), mFormatter, millis, millis, flags, Time.getCurrentTimezone()).toString();
+        String monthTitle = "";
+        if(locale.getLanguage().equals("th")){
+            monthTitle = DateUtils.formatDateRange(getContext(), mFormatter, millis, millis,
+                    DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_YEAR | DateUtils.FORMAT_NO_MONTH_DAY, Time.getCurrentTimezone()).toString()
+                    +" พ.ศ. "+(mYear+543);
+        }else{
+            monthTitle = DateUtils.formatDateRange(getContext(), mFormatter, millis, millis, flags, Time.getCurrentTimezone()).toString();
+        }
         return monthTitle.substring(0, 1).toUpperCase() + monthTitle.substring(1).toLowerCase();
     }
 
@@ -470,7 +486,7 @@ public abstract class MonthView extends View {
             int x = (2 * i + 1) * dayWidthHalf + mPadding;
             mDayLabelCalendar.set(Calendar.DAY_OF_WEEK, calendarDay);
             canvas.drawText(mDayLabelCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT,
-                    Locale.getDefault()).toUpperCase(Locale.getDefault()), x, y,
+                    locale).toUpperCase(locale), x, y,
                     mMonthDayLabelPaint);
         }
     }

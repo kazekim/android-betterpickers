@@ -294,6 +294,7 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
         drawingParams.put(MonthView.VIEW_PARAMS_WEEK_START, mController.getFirstDayOfWeek());
         drawingParams.put(MonthView.VIEW_PARAMS_RANGE_MIN, rangeMin);
         drawingParams.put(MonthView.VIEW_PARAMS_RANGE_MAX, rangeMax);
+        monthView.setLocale(mController.getLocale());
         monthView.setMonthParams(drawingParams);
         monthView.invalidate();
         return monthView;
