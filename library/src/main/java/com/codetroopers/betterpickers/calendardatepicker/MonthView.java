@@ -34,6 +34,7 @@ import android.support.v4.widget.ExploreByTouchHelper;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.text.format.Time;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,6 +46,7 @@ import com.codetroopers.betterpickers.Utils;
 import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter.CalendarDay;
 
 import java.security.InvalidParameterException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Formatter;
 import java.util.HashMap;
@@ -462,9 +464,8 @@ public abstract class MonthView extends View {
         long millis = mCalendar.getTimeInMillis();
         String monthTitle = "";
         if(locale.getLanguage().equals("th")){
-            monthTitle = DateUtils.formatDateRange(getContext(), mFormatter, millis, millis,
-                    DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_YEAR | DateUtils.FORMAT_NO_MONTH_DAY, Time.getCurrentTimezone()).toString()
-                    +" พ.ศ. "+(mYear+543);
+            monthTitle = new SimpleDateFormat("MMMM", new Locale("th")).format(mCalendar.getTime());
+            monthTitle += " พ.ศ. "+(mYear+543);
         }else{
             monthTitle = DateUtils.formatDateRange(getContext(), mFormatter, millis, millis, flags, Time.getCurrentTimezone()).toString();
         }
